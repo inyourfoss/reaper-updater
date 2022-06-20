@@ -34,6 +34,7 @@ reaper_archive() {
     echo "checking if contains ~"
     string_contain '~' $1 && rel_to_home=$(echo $1 | tr -d "~")
     echo "$HOME$rel_to_home"
+    mkdir -p "$HOME$rel_to_home"
     [ ! -z $rel_to_home ] && mv /tmp/reaper*.tar.xz "$HOME$rel_to_home"
 }
 string_contain() {
