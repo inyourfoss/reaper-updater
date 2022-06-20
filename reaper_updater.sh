@@ -2,8 +2,10 @@
 # dependencies: libxml curl tar posix-shell 
 # tested with bash and dash
 
+# global variables
 URL="https://www.reaper.fm"
 
+################ functions ####################
 get_dl_path() {
     # parent of download button wich is a link, that contains linux_x86_64 => download link
     xpath_string="//img[@class='downloadbutton']/parent::a[contains(@href,'linux_x86_64')]/@href"
@@ -42,7 +44,10 @@ string_contain() {
     esac
     return $_ret
 }
+###################################################
 
+
+################ option checking ##################
 for tag in "$@";do
     case "$tag" in  
         '-a'*)
@@ -69,6 +74,9 @@ OPTIONS:
         ;;
     esac
 done
+###################################################
+
+############## main programm ######################
 
 dl_path=$(get_dl_path)
 dl_link=$URL/$dl_path
@@ -85,3 +93,5 @@ reaper_unpack
 reaper_install
 
 reaper_remove
+
+####################################################
