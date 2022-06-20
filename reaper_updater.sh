@@ -28,6 +28,7 @@ reaper_install() {
 }
 reaper_remove() {
     rm -f /tmp/reaper*.tar.xz
+    rm -rf /tmp/reaper_linux_x86_64
 }
 reaper_archive() {
     echo "checking if contains ~"
