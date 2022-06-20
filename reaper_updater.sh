@@ -52,12 +52,14 @@ for tag in "$@";do
             #groff -Tascii -man test.1 | less
             printf '
 OPTIONS:
-Set archive-path:
-The tarball by default will be discarded after execution 
-to save it usa the -a option.
+\t[help | -h]
+\t:\tshow help page
+
+    The tarball by default will be discarded after execution 
+    to save it usa the -a option.
 \t[-a=<ARCHIVEPATH>]
 \t:\tset your path of preference
-\t\tfor the script to save the tarball to\n
+\t\tfor the script to save the tarball to
 '
             exit
         ;;
