@@ -8,4 +8,10 @@ Downloads the tarball archive into /tmp extracts it and executes the install scr
 
 Also the user location for the install is changes to ~/.local/opt instead of ~/opt
 
+## Dependencies
 
+* libxml
+* curl
+* tar
+* posix-compliant shell
+* standard unix/gnu utils (sed, cut, tr)
