@@ -96,15 +96,18 @@ reaper_remove
 
 reaper_dl
 
-# check if variable is declared if so execute
-[ ! -z $archive_path ] && echo "Archiving to: $archive_path"
-[ ! -z $archive_path ] && reaper_archive $archive_path
+# check if variable is declared. if so execute
+if [ ! -z $archive_path ]
+    echo "Archiving to: $archive_path"
+    reaper_archive $archive_path
+fi
 
-# check if variable is declared if so dont execute
-[ -z $download_only ] && reaper_unpack
-[ -z $download_only ] && reaper_install
+# check if variable is declared. if so dont execute
+if [ -z $download_only ]
+    reaper_unpack
+    reaper_install
+fi
 
 reaper_remove
 
 ####################################################
-
