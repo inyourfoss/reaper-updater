@@ -12,6 +12,15 @@ get_dl_path() {
 
     curl -s  $URL/download.php | xmllint --html --xpath $xpath_string - | cut -d'=' -f2 | tr -d "\""
 }
+string_contain() {
+    _ret=1
+    case $2 in
+        *$1*)
+            _ret=0
+        ;;
+    esac
+    return $_ret
+}
 reaper_dl() {
     #aria2c $dl_link --dir=/tmp
     #wget --directory-prefix=/tmp $dl_link
@@ -37,23 +46,17 @@ reaper_archive() {
     mkdir -p "$HOME$rel_to_home"
     [ ! -z $rel_to_home ] && mv /tmp/reaper*.tar.xz "$HOME$rel_to_home"
 }
-string_contain() {
-    _ret=1
-    case $2 in
-        *$1*)
-            _ret=0
-        ;;
-    esac
-    return $_ret
-}
 ###################################################
 
 
 ################ option checking ##################
 for tag in "$@";do
     case "$tag" in  
-        '-a'*)
+        '-a'*|'--archive'*)
             archive_path="$(echo "$tag" | cut -d'=' -f2)"
+        ;;
+        '-g'|'--get-only')
+            download_only=0
         ;;
         'help'|'-h')
             #groff -Tascii -man test.1 | less
@@ -63,10 +66,16 @@ OPTIONS:
 \t:\tshow help page
 
     The tarball by default will be discarded after execution 
-    to save it usa the -a option.
-\t[-a=<ARCHIVEPATH>]
+    to save it use the -a option.
+\t[-a=<ARCHIVEPATH>|--archive=<ARCHIVEPATH>]
 \t:\tset your path of preference
 \t\tfor the script to save the tarball to
+
+    For only downloading the tarball,
+    -a is mandatory to use -g or --get-only
+\t[-g|--get-only]
+\t:\tWithout the -a option the file will only
+\t\tbe downloaded to /tmp and then discarded.
 '
             exit
         ;;
@@ -87,14 +96,18 @@ reaper_remove
 
 reaper_dl
 
-[ ! -z $archive_path ] && echo "Archiving to: $archive_path"
-[ ! -z $archive_path ] && reaper_archive $archive_path
+# check if variable is declared. if so execute
+if [ ! -z $archive_path ];
+    echo "Archiving to: $archive_path"
+    reaper_archive $archive_path
+fi
 
-reaper_unpack
-
-reaper_install
+# check if variable is declared. if so dont execute
+if [ -z $download_only ];
+    reaper_unpack
+    reaper_install
+fi
 
 reaper_remove
 
 ####################################################
-
