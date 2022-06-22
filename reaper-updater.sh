@@ -58,7 +58,7 @@ for tag in "$@";do
         '-g'|'--get-only')
             download_only=0
         ;;
-        'help'|'-h')
+        'help'|'-h'|'--help')
             #groff -Tascii -man test.1 | less
             printf '
 OPTIONS:
@@ -97,13 +97,13 @@ reaper_remove
 reaper_dl
 
 # check if variable is declared. if so execute
-if [ ! -z $archive_path ];
+if [ ! -z $archive_path ]; then
     echo "Archiving to: $archive_path"
     reaper_archive $archive_path
 fi
 
 # check if variable is declared. if so dont execute
-if [ -z $download_only ];
+if [ -z $download_only ]; then
     reaper_unpack
     reaper_install
 fi
