@@ -55,14 +55,16 @@ reaper_archive() {
 for tag in "$@";do
     case "$tag" in  
         '-a'*|'--archive'*)
-            archive_path="$(echo "$tag" | cut -d'=' -f2)"
+            archive_path="$(echo "$tag" | cut -d' ' -f2-)"
+            [ -z "$archive_path" ] && archive_path="$(xdg-user-dir DOWNLOAD)"
         ;;
         '-g'|'--get-only')
+            archive_path="$(xdg-user-dir DOWNLOAD)"
             download_only=0
         ;;
 
         '-p'|'--path')
-            install_path="$(echo "$tag" | cut -d'=' -f2 | tr -s '/')"
+            install_path="$(echo "$tag" | cut -d' ' -f2- | tr -s '/')"
         ;;
         'help'|'-h'|'--help')
             #groff -Tascii -man test.1 | less
@@ -70,21 +72,40 @@ for tag in "$@";do
 USAGE:
 ./reaper-updater.sh [options] 
 
+NOTE:
+Without any arguments Reaper will be installed to the directory: ~/.local/opt (no prompt necessary)
+And the downloaded tarball file will be discarded.
+
 OPTIONS:
 \t[--help | -h | help]
 \t:\tshow help page
 
     The tarball by default will be discarded after execution 
     to save it use the -a option.
-\t[-a=<ARCHIVEPATH>|--archive=<ARCHIVEPATH>]
+\t[-a <ARCHIVEPATH>|--archive <ARCHIVEPATH>]
 \t:\tset your path of preference
 \t\tfor the script to save the tarball to
 
-    For only downloading the tarball,
-    -a is mandatory to use -g or --get-only
-\t[-g|--get-only]
-\t:\tWithout the -a option the file will only
-\t\tbe downloaded to /tmp and then discarded.
+     
+\t[-g|--get-only] : Download reaper tarball without installing.
+\t:\tWithout the ARCHIVEPATH set it will be downloaded in ~/Downloads
+
+EXAMPLES:
+
+Install only to ~/.local/opt:
+./reaper-updater.sh
+
+Install only to any directory:
+./reaper-updater.sh --path <ANY_DIRECTORY>
+
+Install to any directory and archive to another:
+./reaper-updater.sh --path <ANY_DIRECTORY> --archive <OTHER_DIRECTORY>
+
+Download to default Downloads directory:
+./reaper-updater.sh --archive --get-only
+
+Download to any directory:
+./reaper-updater.sh --archive <ANY_DIRECTORY> --get-only
 '
             exit
         ;;
