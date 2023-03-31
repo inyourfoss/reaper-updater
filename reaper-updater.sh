@@ -32,11 +32,12 @@ reaper_dl() {
 reaper_unpack() {
     tar  -xaf /tmp/reaper*.tar.xz --directory=/tmp
 }
+
 reaper_install() {
-    tmp_prefix=/tmp/reaper_linux_x86_64
-    sed 's/$HOME\/opt/$HOME\/.local\/opt/g' < "$tmp_prefix/install-reaper.sh" > "$tmp_prefix/install-reaper-new.sh"
-    bash $tmp_prefix/install-reaper-new.sh
+    [ -n "$install_path" ] && install_path="$HOME/.local/opt/"
+    bash /tmp/reaper_linux_x86_64/install-reaper.sh --install "$install_path" --integrate-user-desktop
 }
+
 reaper_remove() {
     rm -f /tmp/reaper*.tar.xz
     rm -rf /tmp/reaper_linux_x86_64
@@ -57,6 +58,10 @@ for tag in "$@";do
         ;;
         '-g'|'--get-only')
             download_only=0
+        ;;
+
+        '-p'|'--path')
+            install_path="$(echo "$tag" | cut -d'=' -f2)"
         ;;
         'help'|'-h'|'--help')
             #groff -Tascii -man test.1 | less
@@ -106,6 +111,7 @@ fi
 if [ -z "$download_only" ]; then
     reaper_unpack
     reaper_install
+    echo "Reaper has now been installed"
 else
     echo "not installing"
 fi
