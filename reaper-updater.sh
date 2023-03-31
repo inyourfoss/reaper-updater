@@ -34,7 +34,8 @@ reaper_unpack() {
 }
 
 reaper_install() {
-    [ -z "$install_path" ] && install_path="$HOME/.local/opt/"
+	[ -n "$install_path" ] && install_path="${install_path%/}"
+    [ -z "$install_path" ] && install_path="$HOME/.local/opt"
     bash /tmp/reaper_linux_x86_64/install-reaper.sh --install "$install_path" --integrate-user-desktop
 }
 
@@ -61,7 +62,7 @@ for tag in "$@";do
         ;;
 
         '-p'|'--path')
-            install_path="$(echo "$tag" | cut -d'=' -f2)"
+            install_path="$(echo "$tag" | cut -d'=' -f2 | tr -s '/')"
         ;;
         'help'|'-h'|'--help')
             #groff -Tascii -man test.1 | less
