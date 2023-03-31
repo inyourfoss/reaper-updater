@@ -67,8 +67,11 @@ for tag in "$@";do
         'help'|'-h'|'--help')
             #groff -Tascii -man test.1 | less
             printf '
+USAGE:
+./reaper-updater.sh [options] 
+
 OPTIONS:
-\t[help | -h]
+\t[--help | -h | help]
 \t:\tshow help page
 
     The tarball by default will be discarded after execution 
