@@ -6,12 +6,13 @@
 URL="https://www.reaper.fm"
 
 ################ functions ####################
+#
 get_dl_path() {
     # parent of download button wich is a link, that contains linux_x86_64 => download link
     xpath_string="//img[@class='downloadbutton']/parent::a[contains(@href,'linux_x86_64')]/@href"
-
     curl -s  $URL/download.php | xmllint --html --xpath $xpath_string - | cut -d'=' -f2 | tr -d "\""
 }
+
 string_contain() {
     _ret=1
     case $2 in
@@ -21,18 +22,19 @@ string_contain() {
     esac
     return $_ret
 }
+
 reaper_dl() {
     #aria2c $dl_link --dir=/tmp
     #wget --directory-prefix=/tmp $dl_link
     _pwd=$(pwd)
-    cd /tmp && curl -OL $dl_link && cd $_pwd
+    cd /tmp && curl -OL "$dl_link" && cd "$_pwd" || exit
 }
 reaper_unpack() {
     tar  -xaf /tmp/reaper*.tar.xz --directory=/tmp
 }
 reaper_install() {
     tmp_prefix=/tmp/reaper_linux_x86_64
-    cat $tmp_prefix/install-reaper.sh | sed 's/$HOME\/opt/$HOME\/.local\/opt/g' > $tmp_prefix/install-reaper-new.sh
+    sed 's/$HOME\/opt/$HOME\/.local\/opt/g' < "$tmp_prefix/install-reaper.sh" > "$tmp_prefix/install-reaper-new.sh"
     bash $tmp_prefix/install-reaper-new.sh
 }
 reaper_remove() {
@@ -41,10 +43,8 @@ reaper_remove() {
 }
 reaper_archive() {
     echo "checking if contains ~"
-    string_contain '~' $1 && rel_to_home=$(echo $1 | tr -d "~")
-    echo "$HOME$rel_to_home"
-    mkdir -p "$HOME$rel_to_home"
-    [ ! -z $rel_to_home ] && mv /tmp/reaper*.tar.xz "$HOME$rel_to_home"
+    string_contain '~' "$1" && rel_to_home=$(echo "$1" | tr -d "~") && echo "$HOME$rel_to_home" && mkdir -p "$HOME$rel_to_home" && mv /tmp/reaper*.tar.xz "$HOME$rel_to_home"
+    string_contain '~' "$1" || mv /tmp/reaper*.tar.xz "$1"
 }
 ###################################################
 
@@ -90,22 +90,24 @@ done
 ############## main programm ######################
 
 dl_path=$(get_dl_path)
-dl_link=$URL/$dl_path
+dl_link="$URL/$dl_path"
 
 reaper_remove
 
 reaper_dl
 
 # check if variable is declared. if so execute
-if [ ! -z $archive_path ]; then
+if [ -n "$archive_path" ]; then
     echo "Archiving to: $archive_path"
-    reaper_archive $archive_path
+    reaper_archive "$archive_path"
 fi
 
 # check if variable is declared. if so dont execute
-if [ -z $download_only ]; then
+if [ -z "$download_only" ]; then
     reaper_unpack
     reaper_install
+else
+    echo "not installing"
 fi
 
 reaper_remove
