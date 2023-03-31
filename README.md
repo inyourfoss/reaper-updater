@@ -2,23 +2,25 @@
 Update your reaper install on linux automatically.
 
 ## Description
-The script grabs the latest Reaper version from https://reaper.fm/download.php
+The script grabs and installs the latest Reaper version from https://reaper.fm/download.php
+It can also be used for downloading only without installing.
 
-Downloads the tarball archive into /tmp extracts it and executes the install script. (Which is then removed after execution)
+## Usage
+To find out how to use the Script use the help docs like so:
+```
+./reaper_updater.sh --help
+```
 
-Also the user location for the install is changed from ~/opt to ~/.local/opt
 ## Dependencies
-
 * libxml
 * curl
 * tar
 * posix-compliant shell
 * standard unix/gnu utils (sed, cut, tr)
+* xdg-user-dirs
 
 
 If you like the script please consider sending me some crypto:
-
-
 Bitcoin:
 `bc1qcqra7lzj7m3y0lxlj2vskxdj736ln6qdrpcqfr`
 
